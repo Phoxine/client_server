@@ -34,10 +34,10 @@ func (h *Handler) RegisterUserRoutes(g *echo.Group) {
 // @Security OAuth2Password
 func (h *Handler) listUser(c echo.Context) error {
 	var users []users.Users
-	users, err := h.userService.ListUser(c)
+	users, err := h.userService.ListUser(c.Request().Context())
 	if err != nil {
 		log.Error(err.Error())
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to list users"})
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Failed to list users"})
 	}
 	return c.JSON(http.StatusOK, users)
 }
@@ -54,8 +54,7 @@ func (h *Handler) getUser(c echo.Context) error {
 	var user users.Users
 	id := c.Param("id")
 	idInt, _ := strconv.Atoi(id)
-
-	user, err := h.userService.GetUser(idInt, c)
+	user, err := h.userService.GetUser(c.Request().Context(), idInt)
 	if err != nil {
 		log.Error(err.Error())
 		return echo.NewHTTPError(http.StatusNotFound, map[string]string{"error": "User not found"})
@@ -85,7 +84,7 @@ func (h *Handler) saveUser(c echo.Context) error {
 		})
 	}
 	newUser := users.Users{Name: req.Name, Email: req.Email, CreatedAt: time.Now()}
-	id, err := h.userService.CreateUser(newUser, c)
+	id, err := h.userService.CreateUser(c.Request().Context(), newUser)
 	if err != nil {
 		log.Error(err.Error())
 		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{
@@ -116,7 +115,7 @@ func (h *Handler) updateUser(c echo.Context) error {
 	id := c.Param("id")
 	idInt, _ := strconv.Atoi(id)
 	var user users.Users
-	user, err := h.userService.GetUser(idInt, c)
+	user, err := h.userService.GetUser(c.Request().Context(), idInt)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]string{"error": "User not found"})
 	}
@@ -135,10 +134,10 @@ func (h *Handler) updateUser(c echo.Context) error {
 		user.Email = req.Email
 	}
 
-	affectedRowCount, err := h.userService.UpdateUser(user, c)
+	affectedRowCount, err := h.userService.UpdateUser(c.Request().Context(), user)
 	if err != nil {
 		log.Error(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError, map[string]string{"error": "Failed to update user"})
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Failed to update user"})
 	}
 
 	return c.JSON(http.StatusOK, map[string]int{
@@ -159,14 +158,14 @@ func (h *Handler) deleteUser(c echo.Context) error {
 	id := c.Param("id")
 	idInt, _ := strconv.Atoi(id)
 
-	if _, err := h.userService.GetUser(idInt, c); err != nil {
+	if _, err := h.userService.GetUser(c.Request().Context(), idInt); err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, map[string]string{"error": "User not found"})
 	}
 
-	_, err := h.userService.DeleteUser([]int{idInt}, c)
+	_, err := h.userService.DeleteUser(c.Request().Context(), []int{idInt})
 	if err != nil {
 		log.Error(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError, map[string]string{"error": "Failed to delete user"})
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Failed to delete user"})
 	}
 	return c.String(http.StatusAccepted, "")
 }
@@ -196,7 +195,7 @@ func (h *Handler) saveClientUser(c echo.Context) error {
 	resp, err := client.Get(req.JwksURL)
 	if err != nil {
 		log.Error(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError, map[string]string{
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{
 			"error": "Failed to get jwks",
 		})
 	}
@@ -204,7 +203,7 @@ func (h *Handler) saveClientUser(c echo.Context) error {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Error(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError, map[string]string{
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{
 			"error": "Failed to read jwks",
 		})
 	}
@@ -214,7 +213,7 @@ func (h *Handler) saveClientUser(c echo.Context) error {
 	token, err := jwtHandler.ParseJWTWithJWKSet(req.Token, string(body))
 	if err != nil {
 		log.Error(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError, map[string]string{
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{
 			"error": "Failed to parse jwt",
 		})
 	}
@@ -224,11 +223,11 @@ func (h *Handler) saveClientUser(c echo.Context) error {
 	user.Name = name
 	user.Email = email
 	user.CreatedAt = time.Now()
-	id, err := h.userService.CreateUser(user, c)
+	id, err := h.userService.CreateUser(c.Request().Context(), user)
 
 	if err != nil {
 		log.Error(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError, map[string]string{"error": "Failed to create user"})
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Failed to create user"})
 	}
 	return c.JSON(http.StatusAccepted, map[string]int{"id": id})
 }

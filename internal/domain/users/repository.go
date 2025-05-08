@@ -1,13 +1,13 @@
 package users
 
 import (
-	echo "github.com/labstack/echo/v4"
+	"context"
 )
 
 type UserRepository interface {
-	GetUser(int, echo.Context) (Users, error)
-	ListUser(echo.Context) ([]Users, error)
-	CreateUser(Users, echo.Context) (int, error)
-	UpdateUser(Users, echo.Context) (int, error)
-	DeleteUser([]int, echo.Context) (int, error)
+	GetUser(context.Context, int) (Users, error)
+	ListUser(context.Context) ([]Users, error)
+	CreateUser(context.Context, Users) (int, error)
+	UpdateUser(context.Context, Users) (int, error)
+	DeleteUser(context.Context, []int) (int, error)
 }

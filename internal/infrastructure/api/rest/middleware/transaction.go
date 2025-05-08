@@ -1,7 +1,10 @@
 package middleware
 
 import (
+	"context"
 	"net/http"
+
+	shared "client_server/internal/domain/shared"
 
 	"github.com/labstack/echo/v4"
 )
@@ -21,8 +24,8 @@ func (m *Middleware) TransactionMiddleware() echo.MiddlewareFunc {
 					panic(p)
 				}
 			}()
-
-			c.Set("tx", tx)
+			ctx = context.WithValue(ctx, shared.TxKey, tx)
+			c.SetRequest(c.Request().WithContext(ctx))
 
 			if err := next(c); err != nil {
 				_ = tx.Rollback(ctx)
