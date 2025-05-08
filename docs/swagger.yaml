@@ -1,0 +1,187 @@
+basePath: /api/v1
+definitions:
+  handler.CreateClientUserRequest:
+    properties:
+      jwksURL:
+        example: https://client.com/.well-known/jwks.json
+        type: string
+      token:
+        example: aaa.bbb.ccc
+        type: string
+    type: object
+  handler.CreateUserRequest:
+    properties:
+      email:
+        example: alice@example.com
+        type: string
+      name:
+        example: Alice
+        type: string
+    type: object
+  handler.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  handler.UpdateUserRequest:
+    properties:
+      email:
+        example: alice@example.com
+        type: string
+      name:
+        example: Alice
+        type: string
+    type: object
+host: localhost:1323
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample client server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.2.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Login
+      tags:
+      - auth
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: List users
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - OAuth2Password: []
+      summary: List users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Save user
+      parameters:
+      - description: Create User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateUserRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - OAuth2Password: []
+      summary: Save user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - OAuth2Password: []
+      summary: Delete user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - OAuth2Password: []
+      summary: Get user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateUserRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - OAuth2Password: []
+      summary: Update user
+      tags:
+      - users
+  /users/client:
+    post:
+      consumes:
+      - application/json
+      description: Save Client user by token
+      parameters:
+      - description: Create Client User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateClientUserRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - OAuth2Password: []
+      summary: Save Client user
+      tags:
+      - users
+securityDefinitions:
+  OAuth2Password:
+    flow: password
+    tokenUrl: /api/v1/auth/login
+    type: oauth2
+swagger: "2.0"
