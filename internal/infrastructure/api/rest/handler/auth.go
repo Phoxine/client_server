@@ -37,7 +37,7 @@ func (h *Handler) login(c echo.Context) error {
 		"username": req.Username,
 	}, []byte("secret"))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, map[string]string{
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{
 			"error": "Failed to generate jwt",
 		})
 	}

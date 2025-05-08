@@ -25,11 +25,11 @@ import (
 
 // InitializeServer is a Wire injector function.
 func InitializeServer() (*rest.Server, error) {
+	userRepository := persistence.NewPgxUserRepository()
+	userService := users.NewUserService(userRepository)
 	string2 := configPath()
 	clientConfig := config.NewClientConfig(string2)
 	pgxPool := database.NewPgxPool(clientConfig)
-	userRepository := persistence.NewPgxUserRepository(pgxPool)
-	userService := users.NewUserService(userRepository)
 	transactionService := persistence2.NewPgxTransactionService(pgxPool)
 	loggerLogger := logger.NewLogrusLogger(clientConfig)
 	server, err := rest.New(userService, transactionService, loggerLogger)

@@ -11,7 +11,8 @@ func (s *Server) routes(h *handler.Handler, m *middleware.Middleware) {
 	prefix := s.echo.Group("/api/v1")
 	h.RegisterUserRoutes(prefix)
 	h.RegisterAuthRoutes(prefix)
-	s.echo.Use(m.TransactionMiddleware())
 	s.echo.Use(m.AuthenticationMiddleware())
+	s.echo.Use(m.TransactionMiddleware())
+	s.echo.Use(m.ErrorHandlerMiddleware())
 	s.echo.GET("/swagger/*", echoSwagger.WrapHandler)
 }
