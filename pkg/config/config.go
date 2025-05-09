@@ -8,9 +8,13 @@ import (
 
 type ClientConfig struct {
 	Postgres     PostgresConfig `yaml:"postgres"`
-	IsProduction bool           `yaml:"is_production"`
+	ServerConfig ServerConfig   `yaml:"client-server"`
 }
 
+type ServerConfig struct {
+	Port         int  `yaml:"port"`
+	IsProduction bool `yaml:"is_production"`
+}
 type PostgresConfig struct {
 	Host     string `yaml:"host"`
 	Port     string `yaml:"port"`

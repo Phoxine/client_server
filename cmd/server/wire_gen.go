@@ -31,8 +31,8 @@ func InitializeServer() (*rest.Server, error) {
 	clientConfig := config.NewClientConfig(string2)
 	pgxPool := database.NewPgxPool(clientConfig)
 	transactionService := persistence2.NewPgxTransactionService(pgxPool)
-	loggerLogger := logger.NewLogrusLogger(clientConfig)
-	server, err := rest.New(userService, transactionService, loggerLogger)
+	loggerLogger := logger.NewZapLogger(clientConfig)
+	server, err := rest.New(userService, transactionService, loggerLogger, clientConfig)
 	if err != nil {
 		return nil, err
 	}

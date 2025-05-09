@@ -18,7 +18,7 @@ func NewLogrusLogger(config *client_config.ClientConfig) Logger {
 }
 
 func (l *LogrusLogger) setLogger() {
-	if l.config.IsProduction {
+	if l.config.ServerConfig.IsProduction {
 		l.log.SetFormatter(&logrus.JSONFormatter{})
 		l.log.SetLevel(logrus.InfoLevel)
 	} else {
@@ -44,22 +44,25 @@ func (l *LogrusLogger) setLogger() {
 // 	}
 // }
 
-func (l *LogrusLogger) Info(msg string) {
-	l.log.Info(msg)
+func (l *LogrusLogger) Info(msg ...interface{}) {
+	l.log.Info(msg...)
 }
 
-func (l *LogrusLogger) Error(msg string) {
-	l.log.Error(msg)
+func (l *LogrusLogger) Error(msg ...interface{}) {
+	l.log.Error(msg...)
 }
 
-func (l *LogrusLogger) Debug(msg string) {
-	l.log.Debug(msg)
+func (l *LogrusLogger) Debug(msg ...interface{}) {
+	l.log.Debug(msg...)
 }
 
-func (l *LogrusLogger) Warn(msg string) {
-	l.log.Warn(msg)
+func (l *LogrusLogger) Warn(msg ...interface{}) {
+	l.log.Warn(msg...)
 }
 
-func (l *LogrusLogger) Fatal(msg string) {
-	l.log.Fatal(msg)
+func (l *LogrusLogger) Fatal(msg ...interface{}) {
+	l.log.Fatal(msg...)
+}
+
+func (l *LogrusLogger) Flush() {
 }

@@ -29,7 +29,7 @@ func InitializeServer() (*server.Server, error) {
 		pgxUserRepo.NewPgxUserRepository,
 		users.NewUserService,
 		database.NewPgxPool,
-		logger.NewLogrusLogger,
+		logger.NewZapLogger,
 		client_config.NewClientConfig,
 		configPath,
 	)
