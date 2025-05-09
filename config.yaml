@@ -1,4 +1,7 @@
-is_production: true
+
+client-server:
+  port: 1323
+  is_production: true
 postgres:
   host: postgres
   port: 5432

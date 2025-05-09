@@ -17,6 +17,7 @@
 │
 ├── internal/
 │   ├── domain/                 # Core business logic
+│   │   ├── shared/             # general constants between domains
 │   │   ├── transactions/       # Transaction domain
 │   │   └── users/              # User domain
 │   │
@@ -25,6 +26,7 @@
 │       │   └── rest/           # REST API implementation
 │       │       ├── handler/    # Request handlers (endpoints)
 │       │       ├── middleware/ # Middleware
+│       │       ├── routes.go   # Routes
 │       │       └── server.go   # Server setup
 │       │
 │       ├── persistance/        # Data persistence

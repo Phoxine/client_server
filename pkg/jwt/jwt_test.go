@@ -137,8 +137,9 @@ func TestGetClaimsValuesByKey(t *testing.T) {
 
 type mockLogger struct{}
 
-func (m *mockLogger) Error(string) {}
-func (m *mockLogger) Info(string)  {}
-func (m *mockLogger) Debug(string) {}
-func (m *mockLogger) Warn(string)  {}
-func (m *mockLogger) Fatal(string) {}
+func (m *mockLogger) Error(...interface{}) {}
+func (m *mockLogger) Info(...interface{})  {}
+func (m *mockLogger) Debug(...interface{}) {}
+func (m *mockLogger) Warn(...interface{})  {}
+func (m *mockLogger) Fatal(...interface{}) {}
+func (m *mockLogger) Flush()               {}

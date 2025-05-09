@@ -12,13 +12,13 @@ func (m *Middleware) ErrorHandlerMiddleware() echo.MiddlewareFunc {
 			err := next(c)
 
 			if err != nil {
-				m.log.Error(err.Error())
 				if he, ok := err.(*echo.HTTPError); ok {
+					m.log.Error(he.Message)
 					return c.JSON(he.Code, map[string]interface{}{
 						"error": he.Message,
 					})
 				}
-
+				m.log.Error(err.Error())
 				return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 					"error": err.Error(),
 				})
